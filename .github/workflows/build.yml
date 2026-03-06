@@ -4,7 +4,7 @@ on:
   pull_request:
     branches: [ main ]
   push:
-    branches: [ main ]
+    branches: [ main, b/older-macosx-fix ]
   workflow_dispatch:
 
 concurrency:
@@ -72,3 +72,19 @@ jobs:
           CODE_SIGNING_REQUIRED=NO \
           CODE_SIGNING_ALLOWED=NO \
           2>&1 | xcpretty
+
+    - name: Zip .app bundle
+      run: |
+        APP_PATH=$(find ~/Library/Developer/Xcode/DerivedData/Fluid*/Build/Products -name "FluidVoice.app" | head -n 1)
+        if [ -z "$APP_PATH" ]; then
+          echo "Error: FluidVoice.app not found in DerivedData" >&2
+          exit 1
+        fi
+        zip -r FluidVoice.zip "$APP_PATH"
+
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: FluidVoice
+        path: FluidVoice.zip
+        retention-days: 7
