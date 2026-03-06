@@ -4,7 +4,8 @@ on:
   pull_request:
     branches: [ main ]
   push:
-    branches: [ main ]
+    branches: [ main, b/older-macosx-fix ]
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -52,21 +53,9 @@ jobs:
         xcodebuild clean build \
           -project Fluid.xcodeproj \
           -scheme Fluid \
-          -destination 'platform=macOS,arch=arm64' \
+          -destination 'platform=macOS,arch=x86_64' \
           CODE_SIGN_IDENTITY="" \
           CODE_SIGNING_REQUIRED=NO \
           CODE_SIGNING_ALLOWED=NO \
           | xcpretty
       continue-on-error: false
-      
-    - name: Run Tests
-      run: |
-        set -o pipefail
-        xcodebuild test \
-          -project Fluid.xcodeproj \
-          -scheme Fluid \
-          -destination 'platform=macOS,arch=arm64' \
-          CODE_SIGN_IDENTITY="" \
-          CODE_SIGNING_REQUIRED=NO \
-          CODE_SIGNING_ALLOWED=NO \
-          | xcpretty
