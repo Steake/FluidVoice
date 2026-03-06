@@ -59,3 +59,15 @@ jobs:
           CODE_SIGNING_ALLOWED=NO \
           | xcpretty
       continue-on-error: false
+
+    - name: Zip .app bundle
+      run: |
+        APP_PATH=$(find ~/Library/Developer/Xcode/DerivedData/Fluid*/Build/Products -name "Fluid.app" | head -n 1)
+        zip -r FluidVoice-x86_64.zip "$APP_PATH"
+
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: FluidVoice-x86_64
+        path: FluidVoice-x86_64.zip
+        retention-days: 7
