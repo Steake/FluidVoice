@@ -53,14 +53,14 @@ jobs:
         xcodebuild clean build \
           -project Fluid.xcodeproj \
           -scheme Fluid \
-          -destination 'platform=macOS,arch=arm64' \
+          -destination 'platform=macOS,arch=x86_64' \
           CODE_SIGN_IDENTITY="" \
           CODE_SIGNING_REQUIRED=NO \
           CODE_SIGNING_ALLOWED=NO \
           2>&1 | xcpretty
       continue-on-error: false
-      
-    - name: Run Tests
+
+    - name: Zip .app bundle
       run: |
         set -o pipefail
         xcodebuild test \
